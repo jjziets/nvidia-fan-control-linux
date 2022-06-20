@@ -42,10 +42,10 @@ nCurveEnabled=true
 # There must always be one less temperature threshold (Excluding MAXTHRESHOLD)
 # then there is curve points for the script to work.
 
-MAXTHRESHOLD=80    # Fans will run at 100% if hotter than this temperature
-tempThresh[0]=70   # <-- Apply curve[0] if hotter than
-tempThresh[1]=60   # <-- Apply curve[1] if hotter than
-tempThresh[2]=50   # <-- Apply curve[2] if hotter than
+MAXTHRESHOLD=60    # Fans will run at 100% if hotter than this temperature
+tempThresh[0]=55   # <-- Apply curve[0] if hotter than
+tempThresh[1]=50   # <-- Apply curve[1] if hotter than
+tempThresh[2]=45   # <-- Apply curve[2] if hotter than
 tempThresh[3]=40   # <-- Apply curve[3] if hotter than
 tempThresh[4]=30   # <-- Apply curve[4] if hotter than
                    # """ Apply curve[5] if cooler than
