@@ -75,6 +75,7 @@ numGPUs=$(nvidia-smi --query-gpu=count --format=csv,noheader -i 0)
 initFCS()
 {
     FanControlStates=($(nvidia-settings -q GPUFanControlState | grep 'Attribute' | awk -vFS=': ' -vRS='.' '{print $2}'))
+    xinit -- :0 
     for i in ${FanControlStates[@]}; do
         if [ $i -eq 0 ]; then
             nvidia-settings -a "GPUFanControlState=1" > /dev/null 2>&1
@@ -82,6 +83,8 @@ initFCS()
             break
         fi
     done
+    #close Xserve
+    pkill -15 Xorg
 }
 
 # Function that applies Fan Curve                                        {{{1
