@@ -99,6 +99,10 @@ runCurve()
     [ $cTime -lt $dCurveStart -o $cTime -ge $nCurveStart ] && curve=("${nCurve[@]}") || curve=("${dCurve[@]}")
 
     # Loop through each GPU
+    
+    #open Xserve
+    
+    xinit -- :0 
     for i in $(seq 0 $((numGPUs-1))); do
         speed=100
 
@@ -123,6 +127,8 @@ runCurve()
 
         # Apply fan speed if speed has changed
         [ $speed -lt $((currentSpeed[i]-1)) -o $speed -gt $((currentSpeed[i]+1)) ] && nvidia-settings -a "[fan:$i]/GPUTargetFanSpeed=$speed"
+    #close Xserve
+    pkill -15 Xorg
     done
 }
 
