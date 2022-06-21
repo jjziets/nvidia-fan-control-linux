@@ -1,4 +1,9 @@
 # nvidia-fan-control-linux
+
+before running insall the following 
+sudo apt-get install libgtk-3-0 && sudo apt-get install xinit && sudo apt-get install xserver-xorg-core && sudo update-grub && sudo nvidia-xconfig -a --cool-bits=28 --allow-empty-initial-configuration --enable-all-gpus
+
+
 Fan Curve Control Script for Nvidia GPUs on Linux
 
 In order for this script to work, coolbits must be enabled in xorg.conf
