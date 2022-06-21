@@ -140,15 +140,14 @@ runCurve()
 
        xinit ${SET} xinit  \
 			-a [gpu:0]/GPUFanControlState=1 \
-			-a [gpu:1]/GPUFanControlState=0 \
-			-a [gpu:2]/GPUFanControlState=0 \
-			-a [gpu:3]/GPUFanControlState=0 \
-			-a [gpu:4]/GPUFanControlState=0 \
-			-a [gpu:5]/GPUFanControlState=0 \
-			-a [gpu:6]/GPUFanControlState=0 \
-			-a [gpu:7]/GPUFanControlState=0 \
+			-a [gpu:1]/GPUFanControlState=1 \
+			-a [gpu:2]/GPUFanControlState=1 \
+			-a [gpu:3]/GPUFanControlState=1 \
+			-a [gpu:4]/GPUFanControlState=1 \
+			-a [gpu:5]/GPUFanControlState=1 \
+			-a [gpu:6]/GPUFanControlState=1 \
+			-a [gpu:7]/GPUFanControlState=1 \
 			-a [fan:2]/GPUTargetFanSpeed=30 \
-			-a [fan:3]/GPUTargetFanSpeed=40 \
 			-a [fan:1]/GPUTargetFanSpeed=50 \
 			-a [fan:0]/GPUTargetFanSpeed=60 \
 			-a [fan:6]/GPUTargetFanSpeed=70 \
