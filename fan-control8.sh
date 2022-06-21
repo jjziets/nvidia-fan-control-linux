@@ -147,13 +147,15 @@ runCurve()
 			-a [gpu:5]/GPUFanControlState=1 \
 			-a [gpu:6]/GPUFanControlState=1 \
 			-a [gpu:7]/GPUFanControlState=1 \
-			-a [fan:2]/GPUTargetFanSpeed=30 \
-			-a [fan:1]/GPUTargetFanSpeed=50 \
-			-a [fan:0]/GPUTargetFanSpeed=60 \
-			-a [fan:6]/GPUTargetFanSpeed=70 \
-			-a [fan:7]/GPUTargetFanSpeed=80 \
-			-a [fan:5]/GPUTargetFanSpeed=90 \
-			-a [fan:4]/GPUTargetFanSpeed=100 --  :0
+			-a [fan:2]/GPUTargetFanSpeed=${Fspeed[0]} \
+                        -a [fan:3]/GPUTargetFanSpeed=${Fspeed[1]} \
+                        -a [fan:1]/GPUTargetFanSpeed=${Fspeed[2]} \
+                        -a [fan:0]/GPUTargetFanSpeed=${Fspeed[3]} \
+                        -a [fan:6]/GPUTargetFanSpeed=${Fspeed[4]}  \
+                        -a [fan:7]/GPUTargetFanSpeed=${Fspeed[5]} \
+                        -a [fan:5]/GPUTargetFanSpeed=${Fspeed[6]} \
+                        -a [fan:4]/GPUTargetFanSpeed=${Fspeed[7]} --  :0
+
 
      #close Xserve
    pkill -15 Xorg
