@@ -1,8 +1,9 @@
 # nvidia-fan-control-linux
 
-before running insall the following 
-sudo apt-get install libgtk-3-0 && sudo apt-get install xinit && sudo apt-get install xserver-xorg-core && sudo update-grub && sudo nvidia-xconfig -a --cool-bits=28 --allow-empty-initial-configuration --enable-all-gpus
-
+#efore running insall the following 
+'''
+sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get install -y libgtk-3-0 && sudo apt-get install -y xinit && sudo apt-get install -y xserver-xorg-core && sudo apt-get remove -y gnome-shell && sudo update-grub && sudo nvidia-xconfig -a --cool-bits=28 --allow-empty-initial-configuration --enable-all-gpus
+'''
 
 Fan Curve Control Script for Nvidia GPUs on Linux
 
