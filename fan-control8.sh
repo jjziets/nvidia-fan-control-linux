@@ -135,10 +135,10 @@ runCurve()
         [ $speed -lt $((currentSpeed[i]-1)) -o $speed -gt $((currentSpeed[i]+1)) ] && Fspeed[$i]=$speed
 
     done
-       echo "1GPU0: ${Fspeed[0]} GPU1: ${Fspeed[1]} GPU2: ${Fspeed[2]} GPU3: ${Fspeed[3]}"
+       echo "GPU0: ${Fspeed[0]} GPU1: ${Fspeed[1]} GPU2: ${Fspeed[2]} GPU3: ${Fspeed[3]} GPU4: ${Fspeed[4]} GPU5: ${Fspeed[5]} GPU6: ${Fspeed[6]} GPU7: ${Fspeed[7]}"
 #       echo "2GPU0: $(Fspeed[0]) GPU1: $(Fspeed[1]) GPU2: $(Fspeed[2]) GPU3: $(Fspeed[3])"
 
-       xinit ${SET} 	-a [gpu:0]/GPUFanControlState=1 \
+       xinit ${SET}     -a [gpu:0]/GPUFanControlState=1 \
 			-a [gpu:1]/GPUFanControlState=1 \
 			-a [gpu:2]/GPUFanControlState=1 \
 			-a [gpu:3]/GPUFanControlState=1 \
@@ -146,11 +146,11 @@ runCurve()
 			-a [gpu:5]/GPUFanControlState=1 \
 			-a [gpu:6]/GPUFanControlState=1 \
 			-a [gpu:7]/GPUFanControlState=1 \
-			-a [fan:2]/GPUTargetFanSpeed=${Fspeed[0]} \
+			-a [fan:2]/GPUTargetFanSpeed=${Fspeed[2]} \
                         -a [fan:3]/GPUTargetFanSpeed=${Fspeed[1]} \
                         -a [fan:1]/GPUTargetFanSpeed=${Fspeed[2]} \
                         -a [fan:0]/GPUTargetFanSpeed=${Fspeed[3]} \
-                        -a [fan:6]/GPUTargetFanSpeed=${Fspeed[4]}  \
+                        -a [fan:6]/GPUTargetFanSpeed=${Fspeed[4]} \
                         -a [fan:7]/GPUTargetFanSpeed=${Fspeed[5]} \
                         -a [fan:5]/GPUTargetFanSpeed=${Fspeed[6]} \
                         -a [fan:4]/GPUTargetFanSpeed=${Fspeed[7]} --  :0
