@@ -138,8 +138,7 @@ runCurve()
        echo "1GPU0: ${Fspeed[0]} GPU1: ${Fspeed[1]} GPU2: ${Fspeed[2]} GPU3: ${Fspeed[3]}"
 #       echo "2GPU0: $(Fspeed[0]) GPU1: $(Fspeed[1]) GPU2: $(Fspeed[2]) GPU3: $(Fspeed[3])"
 
-       xinit ${SET} xinit  \
-			-a [gpu:0]/GPUFanControlState=1 \
+       xinit ${SET} 	-a [gpu:0]/GPUFanControlState=1 \
 			-a [gpu:1]/GPUFanControlState=1 \
 			-a [gpu:2]/GPUFanControlState=1 \
 			-a [gpu:3]/GPUFanControlState=1 \
