@@ -116,7 +116,6 @@ runCurve()
             cPoint=$((${#curve[@]}-1))
             for c in $(seq 0 $cPoint); do
                 index=$c
-#		echo "c = $c"
                 case "$c" in
                     $cPoint)
                         comparison=-lt
@@ -135,8 +134,7 @@ runCurve()
         [ $speed -lt $((currentSpeed[i]-1)) -o $speed -gt $((currentSpeed[i]+1)) ] && Fspeed[$i]=$speed
 
     done
-       echo "1GPU0: ${Fspeed[0]} GPU1: ${Fspeed[1]} GPU2: ${Fspeed[2]} GPU3: ${Fspeed[3]}"
-#       echo "2GPU0: $(Fspeed[0]) GPU1: $(Fspeed[1]) GPU2: $(Fspeed[2]) GPU3: $(Fspeed[3])"
+       echo "GPU0: ${Fspeed[0]} GPU1: ${Fspeed[1]} GPU2: ${Fspeed[2]} GPU3: ${Fspeed[3]}"
 
        xinit ${SET} 	-a [gpu:0]/GPUFanControlState=1 -a [fan:0]/GPUTargetFanSpeed=${Fspeed[2]} \
 			-a [gpu:1]/GPUFanControlState=1 -a [fan:1]/GPUTargetFanSpeed=${Fspeed[3]} \
