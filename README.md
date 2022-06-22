@@ -6,9 +6,10 @@ sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get install -y libgtk
 ```
 
 There are 3 version  of this scrip
-fan-control.sh is used with a desktop and requires that you have an x-server running
 
-both fan-control4.sh and fan-control8.sh will work witout but due to some quirek in nvidia driver the fans dont follow the same logical order as the gpus. The two scripts are maped for 4 gpus and 8 gpus systems. This might not work fror systems so check that the fans chagnes correctly. 
+	fan-control.sh is used with a desktop and requires that you have an x-server running
+
+	Both fan-control4.sh and fan-control8.sh will work witout but due to some quirek in nvidia driver the fans dont follow the same logical order as the gpus. The two scripts are maped for 4 gpus and 8 gpus systems. This might not work fror systems so check that the fans chagnes correctly. 
 
 
 Fan Curve Control Script for Nvidia GPUs on Linux
