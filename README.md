@@ -1,9 +1,16 @@
 # nvidia-fan-control-linux
 
-#efore running insall the following 
+#Before running insall the following 
 ``` 
 sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get install -y libgtk-3-0 && sudo apt-get install -y xinit && sudo apt-get install -y xserver-xorg-core && sudo apt-get remove -y gnome-shell && sudo update-grub && sudo nvidia-xconfig -a --cool-bits=28 --allow-empty-initial-configuration --enable-all-gpus
 ```
+
+There are 3 version  of this scrip
+fan-control.sh is used with a desktop and requires that you have an x-server running
+
+both fan-control4.sh and fan-control8.sh will work witout but due to some quirek in nvidia driver the fans dont follow the same logical order as the gpus. The two scripts are maped for 4 gpus and 8 gpus systems. This might not work fror systems so check that the fans chagnes correctly. 
+
+
 Fan Curve Control Script for Nvidia GPUs on Linux
 
 In order for this script to work, coolbits must be enabled in xorg.conf
@@ -25,6 +32,15 @@ If you don't wish to use cron but instead prefer a persistant running script in 
 Run the script in a terminal window with
 ```
 $ fan-control.sh pcurve
+```
+
+Or have it started on boot with sudo crontab -e assuming the file is located under /root/fan-control/
+```
+sudo mkdir /root/fan-control/
+sudo  wget https://raw.githubusercontent.com/jjziets/nvidia-fan-control-linux/master/fan-control4.sh
+cd /root/fan-control/ 
+sudo chmod +x fan-control4.sh
+sudo (crontab -l; echo "@reboot screen -dmS fan-control /root/fan-control/fan-control4.sh pcurve ") | crontab -
 ```
 
 Or set the script to run at login in the background
