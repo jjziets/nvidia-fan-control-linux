@@ -146,7 +146,7 @@ runCurve()
 			-a [gpu:5]/GPUFanControlState=1 \
 			-a [gpu:6]/GPUFanControlState=1 \
 			-a [gpu:7]/GPUFanControlState=1 \
-			-a [fan:2]/GPUTargetFanSpeed=${Fspeed[2]} \
+			-a [fan:2]/GPUTargetFanSpeed=${Fspeed[0]} \
                         -a [fan:3]/GPUTargetFanSpeed=${Fspeed[1]} \
                         -a [fan:1]/GPUTargetFanSpeed=${Fspeed[2]} \
                         -a [fan:0]/GPUTargetFanSpeed=${Fspeed[3]} \
