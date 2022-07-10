@@ -17,6 +17,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #####   Configurable Settings   #####                                    {{{1
+#OC settings
+MemoryOC=2700 #memory c
+CoreClockLimit=1250 #core limits
+GPU_OC=0
+
+
 # FanControl Configuration Path                                          {{{1
 fanConfig="$(getent passwd $(id -un) | cut -d ':' -f6)/.fancontrol"
 
@@ -24,7 +30,7 @@ fanConfig="$(getent passwd $(id -un) | cut -d ':' -f6)/.fancontrol"
 defaultSpeed=60
 
 # Persistent Fan Curve Refresh Interval                                  {{{1
-refresh=5
+refresh=15
 
 # Fan Curve Settings                                                     {{{1
 # Day Curve Start Time (24 Hour Time)
@@ -42,10 +48,10 @@ nCurveEnabled=false
 # There must always be one less temperature threshold (Excluding MAXTHRESHOLD)
 # then there is curve points for the script to work.
 
-MAXTHRESHOLD=60    # Fans will run at 100% if hotter than this temperature
-tempThresh[0]=55   # <-- Apply curve[0] if hotter than
-tempThresh[1]=50   # <-- Apply curve[1] if hotter than
-tempThresh[2]=45   # <-- Apply curve[2] if hotter than
+MAXTHRESHOLD=65    # Fans will run at 100% if hotter than this temperature
+tempThresh[0]=60   # <-- Apply curve[0] if hotter than
+tempThresh[1]=55   # <-- Apply curve[1] if hotter than
+tempThresh[2]=50   # <-- Apply curve[2] if hotter than
 tempThresh[3]=40   # <-- Apply curve[3] if hotter than
 tempThresh[4]=30   # <-- Apply curve[4] if hotter than
                    # """ Apply curve[5] if cooler than
@@ -66,7 +72,16 @@ dCurve[5]=30  nCurve[5]=30
 
 ##### End Configurable Settings #####                                    {{{1
 # Export Display (For Headless Use)                                      {{{1
-export DISPLAY=':0'
+echo "Start a new X server"
+
+if pgrep -x "Xorg"  > /dev/null
+        then
+	pkill Xorg
+	export DISPLAY=':0'
+	else
+#	X :0 &
+	export DISPLAY=':0'
+fi
 
 # Paths to the utilities we will need
 SMI='/usr/bin/nvidia-smi'
@@ -79,22 +94,65 @@ numGPUs=$(nvidia-smi --query-gpu=count --format=csv,noheader -i 0)
 initFCS()
 {
     FanControlStates=($(nvidia-settings -q GPUFanControlState | grep 'Attribute' | awk -vFS=': ' -vRS='.' '{print $2}'))
-    
+
     for i in ${FanControlStates[@]}; do
         if [ $i -eq 0 ]; then
-            xinit ${SET} -a "GPUFanControlState=1" --  :0 -once > /dev/null 2>&1
+            xinit   ${SET} -a "GPUFanControlState=1" -a "[gpu:$i]/GPUFanControlState=1"--  :0 -once > /dev/null 2>&1
             echo "Fan Control State Enabled"
             break
         fi
     done
+
     #close Xserve
     #pkill -15 Xorg
 }
+# function for setting gpus OC
+GpuOC_profile()
+{
+    #test if t-rex is running before starting the search
+    if pgrep -x "t-rex"  > /dev/null
+        then
+	if [[ $GPU_OC -eq 0 ]]; then
+		let GPU_OC=1 
+		xinit  ${SET} 	-a [gpu:0]/GPUFanControlState=1 -a [gpu:0]/GPUPowerMizerMode=1 -a [gpu:0]/GPUMemoryTransferRateOffsetAllPerformanceLevels=$MemoryOC -a [fan:0]/GPUTargetFanSpeed=100 \
+				-a [gpu:1]/GPUFanControlState=1 -a [gpu:1]/GPUPowerMizerMode=1 -a [gpu:1]/GPUMemoryTransferRateOffsetAllPerformanceLevels=$MemoryOC -a [fan:1]/GPUTargetFanSpeed=100 \
+                                -a [gpu:2]/GPUFanControlState=1 -a [gpu:2]/GPUPowerMizerMode=1 -a [gpu:2]/GPUMemoryTransferRateOffsetAllPerformanceLevels=$MemoryOC -a [fan:2]/GPUTargetFanSpeed=100 \
+                                -a [gpu:3]/GPUFanControlState=1 -a [gpu:3]/GPUPowerMizerMode=1 -a [gpu:3]/GPUMemoryTransferRateOffsetAllPerformanceLevels=$MemoryOC -a [fan:3]/GPUTargetFanSpeed=100 \
+				-a [gpu:4]/GPUFanControlState=1 -a [gpu:4]/GPUPowerMizerMode=1 -a [gpu:4]/GPUMemoryTransferRateOffsetAllPerformanceLevels=$MemoryOC -a [fan:4]/GPUTargetFanSpeed=100 \
+                                -a [gpu:5]/GPUFanControlState=1 -a [gpu:5]/GPUPowerMizerMode=1 -a [gpu:5]/GPUMemoryTransferRateOffsetAllPerformanceLevels=$MemoryOC -a [fan:5]/GPUTargetFanSpeed=100 \
+                                -a [gpu:6]/GPUFanControlState=1 -a [gpu:6]/GPUPowerMizerMode=1 -a [gpu:6]/GPUMemoryTransferRateOffsetAllPerformanceLevels=$MemoryOC -a [fan:6]/GPUTargetFanSpeed=100 \
+                                -a [gpu:7]/GPUFanControlState=1 -a [gpu:7]/GPUPowerMizerMode=1 -a [gpu:7]/GPUMemoryTransferRateOffsetAllPerformanceLevels=$MemoryOC -a [fan:7]/GPUTargetFanSpeed=100 --
+		nvidia-smi --lock-gpu-clocks=$CoreClockLimit
+	fi
+     else
+        if [[ $GPU_OC -eq 1 ]]; then
+                let GPU_OC=0
+                xinit  ${SET}   -a [gpu:0]/GPUPowerMizerMode=1 -a [gpu:0]/GPUMemoryTransferRateOffsetAllPerformanceLevels=0 \
+                                -a [gpu:1]/GPUPowerMizerMode=1 -a [gpu:1]/GPUMemoryTransferRateOffsetAllPerformanceLevels=0 \
+                                -a [gpu:2]/GPUPowerMizerMode=1 -a [gpu:2]/GPUMemoryTransferRateOffsetAllPerformanceLevels=0 \
+				-a [gpu:3]/GPUPowerMizerMode=1 -a [gpu:3]/GPUMemoryTransferRateOffsetAllPerformanceLevels=0 \
+				-a [gpu:4]/GPUPowerMizerMode=1 -a [gpu:4]/GPUMemoryTransferRateOffsetAllPerformanceLevels=0 \
+				-a [gpu:5]/GPUPowerMizerMode=1 -a [gpu:5]/GPUMemoryTransferRateOffsetAllPerformanceLevels=0 \
+				-a [gpu:6]/GPUPowerMizerMode=1 -a [gpu:6]/GPUMemoryTransferRateOffsetAllPerformanceLevels=0 \
+                                -a [gpu:7]/GPUPowerMizerMode=1 -a [gpu:7]/GPUMemoryTransferRateOffsetAllPerformanceLevels=0 --  :0 -once
+                nvidia-smi  -rgc
+        fi
+     fi
+}
+
 
 # Function that applies Fan Curve                                        {{{1
 runCurve()
 {
-    # Get GPU Temperature and Current FanSpeed
+
+     GpuOC_profile
+     if pgrep -x "t-rex"  > /dev/null # i trex is running then dont adjust fans speeds
+     then
+	return
+     fi 
+
+    # Get GPU Temperature and Current FanSpeed	
+
     IFS=$'\n'
     gputemp=($(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader))
     currentSpeed=($(nvidia-smi --query-gpu=fan.speed --format=csv,noheader | awk '{print $1}'))
@@ -107,9 +165,9 @@ runCurve()
     [ $cTime -lt $dCurveStart -o $cTime -ge $nCurveStart ] && curve=("${nCurve[@]}") || curve=("${dCurve[@]}")
 
     # Loop through each GPU
-     
     for i in $(seq 0 $((numGPUs-1))); do
         speed=100
+	Fspeed[$i]=$speed
 	echo  "Temp GPU$i:${gputemp[$i]} FanSpeed:${currentSpeed[$i]} "
         # Set speed to appropriate value from curve
         if [ ${gputemp[$i]} -lt $MAXTHRESHOLD ]; then
@@ -126,27 +184,26 @@ runCurve()
                         comparison=-ge
                         ;;
                 esac
-
                 [ ${gputemp[$i]} $comparison ${tempThresh[$index]} ] && { speed=${curve[$c]}; break; }
             done
         fi
 
         # Apply fan speed if speed has changed
-        [ $speed -lt $((currentSpeed[i]-1)) -o $speed -gt $((currentSpeed[i]+1)) ] && Fspeed[$i]=$speed
+	Fspeed[$i]=$speed
+	echo "fan speed $i $speed"
+#        [ $speed -lt $((currentSpeed[i]-1)) -o $speed -gt $((currentSpeed[i]+1)) ] && Fspeed[$i]=$speed
 
     done
-       echo "GPU0: ${Fspeed[0]} GPU1: ${Fspeed[1]} GPU2: ${Fspeed[2]} GPU3: ${Fspeed[3]} GPU4: ${Fspeed[4]} GPU5: ${Fspeed[5]} GPU6: ${Fspeed[6]} GPU7: ${Fspeed[7]}"
-#       echo "2GPU0: $(Fspeed[0]) GPU1: $(Fspeed[1]) GPU2: $(Fspeed[2]) GPU3: $(Fspeed[3])"
 
        xinit ${SET}     -a [gpu:0]/GPUFanControlState=1 \
-			-a [gpu:1]/GPUFanControlState=1 \
-			-a [gpu:2]/GPUFanControlState=1 \
-			-a [gpu:3]/GPUFanControlState=1 \
-			-a [gpu:4]/GPUFanControlState=1 \
-			-a [gpu:5]/GPUFanControlState=1 \
-			-a [gpu:6]/GPUFanControlState=1 \
-			-a [gpu:7]/GPUFanControlState=1 \
-			-a [fan:2]/GPUTargetFanSpeed=${Fspeed[0]} \
+                        -a [gpu:1]/GPUFanControlState=1 \
+                        -a [gpu:2]/GPUFanControlState=1 \
+                        -a [gpu:3]/GPUFanControlState=1 \
+                        -a [gpu:4]/GPUFanControlState=1 \
+                        -a [gpu:5]/GPUFanControlState=1 \
+                        -a [gpu:6]/GPUFanControlState=1 \
+                        -a [gpu:7]/GPUFanControlState=1 \
+                        -a [fan:2]/GPUTargetFanSpeed=${Fspeed[0]} \
                         -a [fan:3]/GPUTargetFanSpeed=${Fspeed[1]} \
                         -a [fan:1]/GPUTargetFanSpeed=${Fspeed[2]} \
                         -a [fan:0]/GPUTargetFanSpeed=${Fspeed[3]} \
@@ -156,8 +213,7 @@ runCurve()
                         -a [fan:4]/GPUTargetFanSpeed=${Fspeed[7]} --  :0
 
 
-     #close Xserve
-   pkill -15 Xorg
+
 }
 
 # Function that gets GPU Fan Stats and displays them                     {{{1
@@ -221,7 +277,7 @@ case "$1" in
             *)
                 echo manual > $fanConfig # Enabling Manual Control and Disabling Fan Curve
                 initFCS
-                xinit ${SET}  -a "GPUTargetFanSpeed=$speed" --  :0 -once
+                 xinit ${SET}  -a "GPUTargetFanSpeed=$speed"   --  :0 -once
                 ;;
         esac
         ;;
@@ -232,9 +288,9 @@ case "$1" in
         # Is input $2 a valid GPU index? Is input $3 a number that is less than or equal to 100?
         re='^[0-9]{,2}$'
         [ $# -eq 3 ] && [[ $2 =~ $re && $2 -lt $numGPUs ]] && [[ $3 =~ $re || $3 -eq 100 ]] \
-        && xinit ${SET} \
+        &&  xinit ${SET} \
             -a "[gpu:$2]/GPUFanControlState=1" \
-            -a "[fan:$2]/GPUTargetFanSpeed=$3"  --  :0 -once
+            -a "[fan:$2]/GPUTargetFanSpeed=$3"   --  :0 -once 
 
         [ $? -ne 0 ] && { echo "Usage: $0 $1  gpuIndex  FanSpeed Between 0 - 100"; exit 2; }
         ;;
@@ -249,7 +305,7 @@ case "$1" in
             curve)
                 initFCS
                 runCurve
-                ;;
+	;;
         esac
         ;;
 
